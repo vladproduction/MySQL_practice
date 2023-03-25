@@ -4,10 +4,8 @@ import niva.DaoNiva;
 import niva.PlayerNiva;
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DaoImplGranit implements DaoGranit {
@@ -29,7 +27,24 @@ public class DaoImplGranit implements DaoGranit {
 
     @Override
     public List<PlayerGranit> readAll() {
-        return null;
+        List<PlayerGranit> granitList = new ArrayList();
+        try (Connection c = getConnection()){
+            PreparedStatement ps = c.prepareStatement("select * from telmanovo.granit");
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String last_name = rs.getString("last_name");
+                int age = rs.getInt("age");
+                String position = rs.getString("position");
+                int number = rs.getInt("number");
+                PlayerGranit playerGranit = new PlayerGranit(id,name,last_name,age,position,number);
+                granitList.add(playerGranit);
+            }
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return granitList;
     }
 
     private Connection getConnection() throws SQLException {
