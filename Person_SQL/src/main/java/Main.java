@@ -9,6 +9,17 @@ public class Main {
         for (int i = 0; i < persons.size(); i++) {
             Person p = persons.get(i);
             System.out.println(p);
+
         }
+
+        //create
+        Person current = new Person(1,"User",30);
+        //dao.create(current);
+        Person candidate = new Person(2, "user32",32);
+        dao.update(current,candidate);
+        dao.remove(4);
+        dao.removeAll();
+
+
     }
 }

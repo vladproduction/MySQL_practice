@@ -58,18 +58,59 @@ public class DaoImpl implements Dao{
 
     @Override
     public void update(Person current, Person candidate) {
-
+        try(Connection c = getConnection()){
+            PreparedStatement ps = c.prepareStatement("update person set name = ?, age = ? where name in (?) and age = ?");
+            ps.setString(1,candidate.getName());
+            ps.setInt(2, candidate.getAge());
+            ps.setString(3,current.getName());
+            ps.setInt(4, current.getAge());
+            ps.executeUpdate();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void remove(int id) {
-
+        try(Connection c = getConnection()){
+            PreparedStatement ps = c.prepareStatement("delete from person where id=?;");
+            ps.setInt(1,id);
+            ps.execute();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void removeAll() {
-
+        try(Connection c = getConnection()){
+            PreparedStatement ps = c.prepareStatement("delete from person");
+            ps.execute();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
+
+    @Override
+    public void makeTransaction() {
+        try(Connection c = getConnection()){
+            c.setAutoCommit(false);
+            Person p = new Person(1,"qqq",10);
+            PreparedStatement ps = c.prepareStatement("insert into person (name, age) values (? , ?)");
+            ps.setString(1,p.getName());
+            ps.setInt(2,p.getAge());
+            ps.execute();
+            PreparedStatement ps2 = c.prepareStatement("insert into person (name, age) values (? , ?)");
+            Person p2 = new Person(8,"www",11);
+            ps2.setString(1,p2.getName());
+            ps2.setInt(2,p2.getAge());
+            ps2.execute();
+            c.commit();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:mysql://localhost:3306/person","root","11111111");
     }
