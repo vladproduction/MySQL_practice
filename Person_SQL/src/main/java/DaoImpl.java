@@ -83,12 +83,7 @@ public class DaoImpl implements Dao{
 
     @Override
     public void removeAll() {
-        try(Connection c = getConnection()){
-            PreparedStatement ps = c.prepareStatement("delete from person");
-            ps.execute();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+
     }
 
     @Override
